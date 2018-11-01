@@ -1,0 +1,124 @@
+:root {
+  --clock-font: 'Share', sans-serif;
+  --source-font: 'Inconsolata', monospace;
+  --shaded: rgba(0, 0, 0, .4);
+  --darker: rgba(0, 0, 0, .8);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: stretch;
+  height: 100vh;
+}
+
+.background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: slateblue;
+  z-index: -1;
+}
+
+.column {
+  flex: 1 1 0%;
+}
+
+.editor.column {
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  opacity: 0;
+  border-right: 1px solid white;
+}
+
+.editor.column.show {
+  opacity: 1;
+}
+
+.editor textarea {
+  background: var(--darker);
+  color: white;
+  flex: 1;
+  border: 0;
+  resize: none;
+  font-family: var(--source-font);
+  font-size: 14px;
+  padding: 10px;
+}
+
+.editor .CodeMirror {
+  flex: 1;
+  height: auto;
+  background: var(--darker) !important;
+}
+
+.editor .error {
+  display: none;
+  padding: 10px;
+  background: darkred;
+  color: white;
+  font-family: monospace;
+}
+
+.editor .error.show {
+  display: block;
+}
+
+.meta.column {
+  flex-grow: 0;
+  flex-basis: 400px;
+  /*background: var(--shaded);*/
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: stretch;
+}
+
+.clock {
+  background: var(--shaded);
+  text-align: center;
+  margin: 20px 0;
+  padding: 20px 0;
+  color: white;
+  font-family: var(--clock-font);
+  border-radius: 30px 0 0 30px;
+}
+
+.clock .time {
+  font-size: 100px;
+}
+
+.clock .date {
+  font-size: 20px;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.controls {
+  padding: 16px;
+  text-align: right;
+  display: flex;
+}
+
+.controls button {
+  flex: 1 0 100px;
+  display: block;
+  background: var(--darker);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 16px;
+  font-family: var(--clock-font);
+  font-size: 20px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
