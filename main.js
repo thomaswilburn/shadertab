@@ -12,6 +12,7 @@ var tick = function() {
 
   if (hours > 12) hours -= 12;
   seconds = (seconds + "").padStart(2, "0");
+  minutes = (minutes + "").padStart(2, "0");
 
   clockTime.innerHTML = `${hours}:${minutes}:${seconds}`;
 

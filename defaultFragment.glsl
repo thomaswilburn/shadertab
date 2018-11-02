@@ -9,6 +9,13 @@ float random(vec2 seed) {
   return fract(sin(dot(seed, vec2(12.9898,78.233))) * 43758.5453123);
 }
 
+vec3 hsv2rgb(vec3 c)
+{
+    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+}
+
 // given a "cell" onscreen, where is its associated voronoi point?
 vec2 cellPoint(vec2 cell) {
   float r = random(cell);
@@ -20,11 +27,13 @@ vec2 cellPoint(vec2 cell) {
 
 // given a cell, what color should we assign?
 vec3 cellColor(vec2 cell) {
-  return vec3(
-    random(cell) * .7,
-    random(cell) * .5,
-    random(cell) * .3
-  );
+  float r = random(cell);
+  float s = sin(u_time / 4513.0) / 2.0 + .5;
+  return hsv2rgb(vec3(
+    sin(u_time / 7947.0),
+    r * .3 + .3 * s,
+    r * .6 + .3
+  ));
 }
 
 void main() {
