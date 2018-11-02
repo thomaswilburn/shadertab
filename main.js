@@ -30,7 +30,7 @@ tick();
 // Shadertoy code
 
 var canvas = document.querySelector(".background");
-var gl = canvas.getContext("webgl");
+var gl = canvas.getContext("webgl", { antialias: true });
 var editorPanel = $.one(".editor");
 var textarea = $.one(".editor textarea");
 var editor;
@@ -124,7 +124,6 @@ var init = async function() {
   render();
 
   $.one(".controls .reset").addEventListener("click", function() {
-    console.log("RESETTING");
     if (editor) {
       editor.setValue(fragDefault);
     } else {
@@ -151,7 +150,8 @@ showEditorButton.addEventListener("click", async function() {
     await loadScript("clike.js");
     editor = CodeMirror.fromTextArea(textarea, {
       theme: "material",
-      mode: "clike"
+      mode: "clike",
+      lineNumbers: true
     });
     editor.on("change", debouncedCompile);
   }
