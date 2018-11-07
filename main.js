@@ -90,19 +90,24 @@ var polys = [
 ];
 var buffer = gl.createBuffer();
 
+var frameCounter = 0;
 var render = function(t) {
-  gl.enableVertexAttribArray(gl.uniforms.coords);
-  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(polys), gl.STATIC_DRAW);
-  gl.vertexAttribPointer(gl.uniforms.coords, 2, gl.FLOAT, false, 0, 0);
-  gl.uniform1f(gl.uniforms.u_time, t + 12581372.5324);
-  canvas.width = canvas.clientWidth;
-  canvas.height = canvas.clientHeight;
-  gl.viewport(0, 0, canvas.width, canvas.height);
-  gl.uniform2f(gl.uniforms.u_resolution, canvas.width, canvas.height);
-  gl.clearColor(0, 1, 1, 1);
-  gl.clear(gl.COLOR_BUFFER_BIT);
-  gl.drawArrays(gl.TRIANGLES, 0, polys.length / 2);
+  frameCounter++;
+  // throttle to rendering at 15fps for battery life
+  if (!(frameCounter % 4)) {
+    gl.enableVertexAttribArray(gl.uniforms.coords);
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(polys), gl.STATIC_DRAW);
+    gl.vertexAttribPointer(gl.uniforms.coords, 2, gl.FLOAT, false, 0, 0);
+    gl.uniform1f(gl.uniforms.u_time, t + 12581372.5324);
+    canvas.width = canvas.clientWidth;
+    canvas.height = canvas.clientHeight;
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    gl.uniform2f(gl.uniforms.u_resolution, canvas.width, canvas.height);
+    gl.clearColor(0, 1, 1, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.drawArrays(gl.TRIANGLES, 0, polys.length / 2);
+  }
   requestAnimationFrame(render);
 }
 
@@ -116,14 +121,20 @@ var debounce = function(fn, delay = 1000) {
 
 var debouncedCompile = debounce(compile);
 
+var getDefaultFragment = async function() {
+  var response = await fetch("defaultFragment.glsl");
+  var body = await response.text();
+  return body;
+};
+
 var init = async function() {
-  var fragDefault = await (await fetch("defaultFragment.glsl")).text();
   var fragStored = localStorage.fragment;
-  textarea.value = fragStored || fragDefault;
+  textarea.value = fragStored || await getDefaultFragment();
   compile();
   render();
 
-  $.one(".controls .reset").addEventListener("click", function() {
+  $.one(".controls .reset").addEventListener("click", async function() {
+    var fragDefault = await getDefaultFragment();
     if (editor) {
       editor.setValue(fragDefault);
     } else {
