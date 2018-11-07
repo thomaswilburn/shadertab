@@ -71,7 +71,7 @@ void main() {
   // apply a sharp step if we want a boundary
   float wall = 1.0 - step(shade, .42);
   vec3 pigment = cellColor(winner);
-  gl_FragColor = vec4(mix(pigment, vec3(0.0), wall), 1.0);
+  // gl_FragColor = vec4(mix(pigment, vec3(0.0), wall), 1.0);
   // flat-shaded variant:
-  // gl_FragColor = vec4(pigment, 1.0);
+  gl_FragColor = vec4(pigment, 1.0);
 }
