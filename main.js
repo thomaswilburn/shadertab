@@ -11,6 +11,7 @@ var tick = function() {
   var seconds = now.getSeconds();
 
   if (hours > 12) hours -= 12;
+  if (hours == 0) hours = 12;
   seconds = (seconds + "").padStart(2, "0");
   minutes = (minutes + "").padStart(2, "0");
 
