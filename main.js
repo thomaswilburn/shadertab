@@ -94,15 +94,15 @@ var buffer = gl.createBuffer();
 var frameCounter = 0;
 var render = function(t) {
   frameCounter++;
-  // throttle to rendering at 15fps for battery life
-  if (!(frameCounter % 4)) {
+  // throttle to rendering at 30fps for battery life
+  if (!(frameCounter % 2)) {
     gl.enableVertexAttribArray(gl.uniforms.coords);
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(polys), gl.STATIC_DRAW);
     gl.vertexAttribPointer(gl.uniforms.coords, 2, gl.FLOAT, false, 0, 0);
     gl.uniform1f(gl.uniforms.u_time, t + 12581372.5324);
-    canvas.width = canvas.clientWidth;
-    canvas.height = canvas.clientHeight;
+    canvas.width = canvas.clientWidth * .75;
+    canvas.height = canvas.clientHeight * .75;
     gl.viewport(0, 0, canvas.width, canvas.height);
     gl.uniform2f(gl.uniforms.u_resolution, canvas.width, canvas.height);
     gl.clearColor(0, 1, 1, 1);
