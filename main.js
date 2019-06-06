@@ -107,6 +107,7 @@ var polys = [
 ];
 var buffer = gl.createBuffer();
 
+var canvasScale = 1;
 var frameCounter = 0;
 var render = function(t) {
   frameCounter++;
@@ -117,8 +118,8 @@ var render = function(t) {
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(polys), gl.STATIC_DRAW);
     gl.vertexAttribPointer(gl.uniforms.coords, 2, gl.FLOAT, false, 0, 0);
     gl.uniform1f(gl.uniforms.u_time, t + 12581372.5324);
-    canvas.width = canvas.clientWidth * .75;
-    canvas.height = canvas.clientHeight * .75;
+    canvas.width = canvas.clientWidth * canvasScale;
+    canvas.height = canvas.clientHeight * canvasScale;
     gl.viewport(0, 0, canvas.width, canvas.height);
     gl.uniform2f(gl.uniforms.u_resolution, canvas.width, canvas.height);
     gl.clearColor(0, 1, 1, 1);

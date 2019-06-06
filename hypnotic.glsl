@@ -74,7 +74,6 @@ float polygon(vec2 st, float sides) {
 }
 
 void main() {
-  float color = 0.0;
   vec2 screenspace = (gl_FragCoord.xy / u_resolution.xy);
   vec2 uv = screenspace * 2.0 - 1.0;
   float aspect = u_resolution.x / u_resolution.y;
@@ -87,36 +86,49 @@ void main() {
     uv.x -= (1.0 - smoothstep(0.0, random(vec2(uv.y)) * .02, scanline)) * (.02 - offset * 0.15);
   }
   
-  float second = floor(u_time / 100.0);
-  float chance = 12.0;
-  float glitch = step(.95, fract(second * .01));
-  //uv.x -= step(.23, 1.0 - screenspace.y) * glitch * .2;
+  float pixel = 1.0 / u_resolution.x;
+  vec3 rgbDistortion = vec3(-pixel * 3.0, 0, pixel * 3.0);
+  vec3 rgb = vec3(0);
   
-  float centerCircle = circle(rotate(uv + .2, PI * period(5.0 * SECONDS)));
-  
-  float inward = stroke(fract(centerCircle * 15.0 + u_time * .0005), .5, .05);
-  color = add(color, inward);
-  
-  float spin = period(45.0 * SECONDS);
-  float sides = 6.0;
-  
-  for (float i = 1.0; i <= 8.0; i += 1.0) {
-    float poly = polygon(rotate(uv + .2, -spin * TAU * i / sides), sides);
-    color = subtract(color, stroke(poly, .1 * i, .02));
+  for (int d = 0; d < 3; d++) {
+    float color = 0.0;
+    
+    vec2 st = uv + vec2(rgbDistortion[d], 0.0);
+
+    float second = floor(u_time / 100.0);
+    float chance = 12.0;
+    float glitch = step(.95, fract(second * .01));
+    //uv.x -= step(.23, 1.0 - screenspace.y) * glitch * .2;
+
+    float centerCircle = circle(rotate(st + .2, PI * period(5.0 * SECONDS)));
+
+    float inward = stroke(fract(centerCircle * 15.0 + u_time * .0005), .5, .05);
+    color = add(color, inward);
+
+    float spin = period(45.0 * SECONDS);
+    float sides = 6.0;
+
+    for (float i = 1.0; i <= 8.0; i += 1.0) {
+      float poly = polygon(rotate(st + .2, -spin * TAU * i / sides), sides);
+      color = subtract(color, stroke(poly, .1 * i, .02));
+    }
+
+    vec2 grid = rotate(st * 32.0, minute * PI);
+    vec2 insideGrid = fract(grid);
+
+    color = add(color, fill(circle(insideGrid - .5), .1) * .5);
+    color = add(color, random(gl_FragCoord.xy / 1173.32 + period(123.0)) * .1);
+
+    float outward = stroke(fract(centerCircle * 3.0 - u_time * .0002), .5, .1);
+
+    float rays = 6.0;
+    float rayspin = period(15.0 * SECONDS) / rays * TAU;
+    float segments = intersect(outward, rayburst(st + .2, rays, rayspin));
+    color = add(color, segments);
+    
+    rgb[d] = color;
+    
   }
   
-  vec2 grid = rotate(uv * 32.0, minute * PI);
-  vec2 insideGrid = fract(grid);
-  
-  color = add(color, fill(circle(insideGrid - .5), .1) * .5);
-  color = add(color, random(gl_FragCoord.xy / 1173.32 + period(123.0)) * .1);
-  
-  float outward = stroke(fract(centerCircle * 3.0 - u_time * .0002), .5, .1);
-  
-  float rays = 6.0;
-  float rayspin = period(15.0 * SECONDS) / rays * TAU;
-  float segments = intersect(outward, rayburst(uv + .2, rays, rayspin));
-  color = add(color, segments);
-  
-  gl_FragColor = vec4(color, color, color, 1.0);
+  gl_FragColor = vec4(rgb, 1.0);
 }
