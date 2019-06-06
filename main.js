@@ -28,6 +28,18 @@ var tick = function() {
 setInterval(tick, 1000);
 tick();
 
+// add top sites list
+
+browser.topSites.get({ includeFavicon: true, limit: 24 }).then(function(sites) {
+  $.one(".top-sites").innerHTML = sites.slice(0, 12).map(s => `
+<li>
+  <a href="${s.url}">
+    <img src="${s.favicon}" class="icon">
+    <span class="title">${s.title}</a>
+  </a>
+  `).join("");
+});
+
 // Shadertoy code
 
 var canvas = document.querySelector(".background");
