@@ -31,11 +31,15 @@ tick();
 // add top sites list
 
 browser.topSites.get({ includeFavicon: true, limit: 24 }).then(function(sites) {
-  $.one(".top-sites").innerHTML = sites.slice(0, 12).map(s => `
+  $.one(".top-sites").innerHTML = sites.slice(0, 18).map(s => `
 <li>
   <a href="${s.url}">
-    <img src="${s.favicon}" class="icon">
-    <span class="title">${s.title}</a>
+    <img
+      src="${s.favicon}"
+      class="icon"
+      alt="${s.title.slice(0, 1).toUpperCase()}"
+      style="background-color: #${s.title.replace(/[^0-9a-f]/g, "").padEnd(6, "0")}">
+    <span class="title">${new URL(s.url).host.replace(/www\./, "")}</a>
   </a>
   `).join("");
 });

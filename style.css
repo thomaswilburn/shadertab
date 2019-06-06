@@ -77,11 +77,14 @@ body {
 .meta.column {
   flex-grow: 0;
   flex-basis: 400px;
+  max-width: 400px;
+  max-height: 100vh;
   /*background: var(--shaded);*/
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: stretch;
+  font-family: var(--clock-font);
 }
 
 .clock {
@@ -105,39 +108,66 @@ body {
   font-weight: bold;
 }
 
-.clock .top-sites {
+.top-sites {
   list-style-type: none;
   margin: 0;
   padding: 0;
+  flex: 1;
+  background: var(--shaded);
+  overflow: auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
 }
 
-.clock .top-sites li {
+.top-sites li {
 }
 
-.clock .top-sites .icon {
-  width: 32px;
-  height: 32px;
-  object-fit: cover;
-  border-radius: 3px;
-  background: white;
-  border: 1px solid #DDD;
-  margin-right: 8px;
-}
-
-.clock .top-sites a {
-  display: flex;
-  text-align: left;
+.top-sites a {
+  display: block;
+  text-align: center;
   align-items: center;
   color: white;
   text-decoration: none;
   padding: 8px;
 }
 
-.clock .top-sites .title {
+.top-sites .icon {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 3px;
+  background: white;
+  border: 2px solid #DDD;
+  margin: auto;
+  display: block;
+  position: relative;
+}
+
+.top-sites .icon:not([src="undefined"]) {
+  background: white !important;
+}
+
+.top-sites .icon[src="undefined"]::before {
+  content: attr(data-letter);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-align: center;
+  font-size: 24px;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.top-sites .title {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
   flex: 1;
+  font-size: 14px;
+  font-style: italic;
 }
 
 .controls {
