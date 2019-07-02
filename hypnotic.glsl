@@ -81,9 +81,14 @@ void main() {
   float minute = period(1.0 * MINUTES);
   float scanning = period(8.0 * SECONDS);
   
-  for (float offset = -.1; offset <= .1; offset += .15) {
-  float scanline = line(scanning * 1.5 + offset * .5, uv.y);
-    uv.x -= (1.0 - smoothstep(0.0, random(vec2(uv.y)) * .02, scanline)) * (.02 - offset * 0.15);
+  vec3 glitchIntervals = vec3(-.1, 0.1, 1.5);
+  vec3 glitchMagnitudes = vec3(.05, .01, .01);
+  
+  for (int i = 0; i < 3; i++) {
+    float interval = glitchIntervals[i];
+    float magnitude = glitchMagnitudes[i];
+    float scanline = line(scanning * 1.5 + interval * .5, uv.y);
+    uv.x -= (1.0 - smoothstep(0.0, random(vec2(uv.y)) * .02, scanline)) * magnitude;
   }
   
   float pixel = 1.0 / u_resolution.x;
@@ -95,14 +100,9 @@ void main() {
     
     vec2 st = uv + vec2(rgbDistortion[d], 0.0);
 
-    float second = floor(u_time / 100.0);
-    float chance = 12.0;
-    float glitch = step(.95, fract(second * .01));
-    //uv.x -= step(.23, 1.0 - screenspace.y) * glitch * .2;
-
     float centerCircle = circle(rotate(st + .2, PI * period(5.0 * SECONDS)));
 
-    float inward = stroke(fract(centerCircle * 15.0 + u_time * .0005), .5, .05);
+    float inward = stroke(fract(centerCircle * 16.0 + u_time * .0004 + .5), .5, .05);
     color = add(color, inward);
 
     float spin = period(45.0 * SECONDS);

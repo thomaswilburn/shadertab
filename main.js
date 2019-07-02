@@ -28,22 +28,6 @@ var tick = function() {
 setInterval(tick, 1000);
 tick();
 
-// add top sites list
-
-browser.topSites.get({ includeFavicon: true, limit: 24 }).then(function(sites) {
-  $.one(".top-sites").innerHTML = sites.slice(0, 18).map(s => `
-<li>
-  <a href="${s.url}">
-    <img
-      src="${s.favicon}"
-      class="icon"
-      alt="${s.title.slice(0, 1).toUpperCase()}"
-      style="background-color: #${s.title.replace(/[^0-9a-f]/g, "").padEnd(6, "0")}">
-    <span class="title">${new URL(s.url).host.replace(/www\./, "")}</a>
-  </a>
-  `).join("");
-});
-
 // Shadertoy code
 
 var canvas = document.querySelector(".background");
@@ -185,4 +169,20 @@ showEditorButton.addEventListener("click", async function() {
     editor.on("change", debouncedCompile);
   }
   editorPanel.classList.toggle("show");
+});
+
+// add top sites list
+
+browser.topSites.get({ includeFavicon: true, limit: 18 }).then(function(sites) {
+  $.one(".top-sites").innerHTML = sites.map(s => `
+<li>
+  <a href="${s.url}">
+    <img
+      src="${s.favicon}"
+      class="icon"
+      alt="${s.title ? s.title.slice(0, 1).toUpperCase() : s.url}"
+      style="background-color: #${s.title ? s.title.replace(/[^0-9a-f]/g, "").padEnd(6, "0") : "white"}">
+    <span class="title">${new URL(s.url).host.replace(/www\./, "")}</a>
+  </a>
+  `).join("");
 });

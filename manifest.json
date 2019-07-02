@@ -2,7 +2,7 @@
   "name": "Shadertab",
   "description": "Shader playground and a clock, for remote workers",
   "manifest_version": 2,
-  "version": "1.0.2",
+  "version": "1.0.3",
   "chrome_url_overrides": {
     "newtab": "index.html"
   },
